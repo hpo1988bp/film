@@ -1117,7 +1117,7 @@ def GetFShareCred():
 			dialog = xbmcgui.Dialog()
 			yes = dialog.yesno(
 				'Đăng nhập không thành công!\n',
-				'[COLOR yellow]Bạn cần tài khoản VIP FSHARE để xem ! Liên hệ qua**Facebook.com/hpo.tranhuyhoang HOẶC ZALO:0974 090 325 để đăng ký tài khoản VIP ngay bây giờ![/COLOR]',
+				'[COLOR yellow]Bạn cần tài khoản VIP FSHARE để xem! Liên hệ qua**Facebook.com/hpo.tranhuyhoang HOẶC ZALO:0974 090 325 để đăng ký tài khoản VIP ngay bây giờ![/COLOR]',
 				yeslabel='OK, Nhập Ngay',
 				nolabel='Bỏ Qua'
 			)
@@ -1125,6 +1125,12 @@ def GetFShareCred():
 				plugin.open_settings()
 				return GetFShareCred()
 			return None
+
+
+def LoginOKNoti(user="",Premium=""):
+	header = "[COLOR yellow]Đăng nhập thành công![/COLOR]"
+	message = "Chào [COLOR red]VIP[/COLOR] [COLOR lime]{}[/COLOR] (Premium [COLOR yellow]{}[/COLOR])".format(user,Premium)
+	xbmc.executebuiltin('Notification("{}", "{}", "{}", "")'.format(header, message, "10000"))
 
 
 def GetFShareUser(cred):
