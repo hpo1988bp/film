@@ -25,8 +25,8 @@ addons_folder = xbmc.translatePath('special://home/addons')
 image = xbmc.translatePath(os.path.join(path, "icon.png"))
 
 plugin = Plugin()
-addon = xbmcaddon.Addon("plugin.video.filmthh.playlist")
-pluginrootpath = "plugin://plugin.video.filmthh.playlist"
+addon = xbmcaddon.Addon("plugin.video.hpofilm.playlist")
+pluginrootpath = "plugin://plugin.video.hpofilm.playlist"
 http = httplib2.Http(cache, disable_ssl_certificate_validation=True)
 query_url = "https://docs.google.com/spreadsheets/d/{sid}/gviz/tq?gid={gid}&headers=1&tq={tq}"
 sheet_headers = {
@@ -177,9 +177,9 @@ def getItems(url_path="0", tq="select A,B,C,D,E"):
 		if "plugin://" in item["path"]:
 			if "install-repo" in item["path"]:
 				item["is_playable"] = False
-			elif re.search("plugin.video.filmthh.playlist/(.+?)/.+?\://", item["path"]):
+			elif re.search("plugin.video.hpofilm.playlist/(.+?)/.+?\://", item["path"]):
 				match = re.search(
-					"plugin.video.filmthh.playlist(/.+?/).+?\://", item["path"])
+					"plugin.video.hpofilm.playlist(/.+?/).+?\://", item["path"])
 				tmp = item["path"].split(match.group(1))
 				tmp[-1] = urllib.quote_plus(tmp[-1])
 				item["path"] = match.group(1).join(tmp)
@@ -762,7 +762,7 @@ def AddTracking(items):
 	'''
 
 	for item in items:
-		if "plugin.video.filmthh.playlist" in item["path"]:
+		if "plugin.video.hpofilm.playlist" in item["path"]:
 			tmps = item["path"].split("?")
 			if len(tmps) == 1:
 				tail = ""
