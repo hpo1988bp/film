@@ -1143,6 +1143,33 @@ def GetFShareUser(cred):
 	user = json.loads(cont)
 	return user
 
+def check_fshare():
+     uname = get_fshare_setting("usernamefshare")
+	 pword = get_fshare_setting("passwordfshare")
+  filename = os.path.join(PROFILE_PATH, 'vmfcookie.dat')
+  if os.path.exists(filename):
+    with open(filename, "r") as f:
+      t = f.read()
+      cookie, csrf = t.split('|')
+      profile_url = 'https://118.69.164.19/account/profile'
+      headers = {
+        'Host': 'www.fshare.vn',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Referer': 'https://www.fshare.vn/',
+        'Cookie': cookie,
+        'X-CSRF-Token': csrf,
+        'X-Requested-With': 'XMLHttpRequest',
+      }
+      r = urlfetch.get(profile_url, headers=headers)
+      match = re.search(r"<span class=\"bt-vip\">(.+?)<\/span>", r.body)
+      acc_type = match.group(1)
+
+
+# TextBoxes('Trạng thái tài khoản fshare', info)
+
+
 
 def GetPlayLinkFromDriveID(drive_id):
 	play_url = "https://drive.google.com/uc?export=mp4&id=%s" % drive_id
