@@ -671,6 +671,40 @@ def InstallRepo(path="0", tracking_string=""):
 	xbmc.executebuiltin("XBMC.UpdateAddonRepos()")
 
 
+@plugin.route('/repo-section/<path>/<tracking_string>')
+def RepoSection(path="0", tracking_string=""):
+	'''
+	Liệt kê các repo
+	Parameters
+	----------
+	path : string
+		Link download zip repo.
+	tracking_string : string
+		Tên dễ đọc của view
+	'''
+	GA(  # tracking
+		"Repo Section - %s" % tracking_string,
+		"/repo-section/%s" % path
+	)
+
+	items = getItems(path)
+	for item in items:
+		if "/play/" in item["path"]:
+			item["path"] = item["path"].replace("/play/", "/install-repo/")
+		# hack xbmcswift2 item to set both is_playable and is_folder to False
+		item["is_playable"] = False
+	items = AddTracking(items)
+
+	install_all_item = {
+		"label": "[COLOR green]Tự động cài tất cả Repo dưới (khuyên dùng)[/COLOR]".decode("utf-8"),
+		"path": pluginrootpath + "/install-repo/%s/%s" % (path, urllib.quote_plus("Install all repo")),
+		"is_playable": False,
+		"info": {"plot": "Bạn nên cài tất cả repo để sử dụng đầy đủ tính năng của [VN Open Playlist]"}
+	}
+	items = [install_all_item] + items
+	return plugin.finish(items)
+
+
 def download(download_path, repo_id):
 	'''
 	Parameters
@@ -1021,7 +1055,18 @@ def get_playable_url(url):
 					return None
 				return url
 			return None
-			
+		except:	pass
+	elif "tv24.vn" in url:
+		cid = re.compile('/(\d+)/').findall(url)[0]
+		return "plugin://plugin.video.sctv/play/" + cid
+	elif "dailymotion.com" in url:
+		did = re.compile("/(\w+)$").findall(url)[0]
+		return "plugin://plugin.video.dailymotion_com/?url=%s&mode=playVideo" % did
+	else:
+		if "://" not in url:
+			url = None
+	return url
+
 def convert_ipv4_url(url):
 	host = re.search('//(.+?)(/|\:)', url).group(1)
 	addrs = socket.getaddrinfo(host,443)
