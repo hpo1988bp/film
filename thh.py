@@ -1127,6 +1127,12 @@ def GetFShareCred():
 			return None
 
 
+def LoginOKNoti(user="",Premium=""):
+	header = "[COLOR yellow]Đăng nhập thành công![/COLOR]"
+	message = "Chào [COLOR red]VIP[/COLOR] [COLOR lime]{}[/COLOR] (Premium [COLOR yellow]{}[/COLOR])".format(user,Premium)
+	xbmc.executebuiltin('Notification("{}", "{}", "{}", "")'.format(header, message, "10000"))
+
+
 def GetFShareUser(cred):
 	user_url = "https://api2.fshare.vn/api/user/get"
 	user_url = convert_ipv4_url(user_url)
