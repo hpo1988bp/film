@@ -229,27 +229,6 @@ def getItems(url_path="0", tq="select A,B,C,D,E"):
 			elif any(service in item["path"] for service in ["4share.vn/d/"]):
 				item["path"] = "plugin://plugin.video.xshare/?mode=38&page=0&url=" + \
 					urllib.quote_plus(item["path"])
-			elif any(service in item["path"] for service in ["4share.vn/f/"]):
-				# elif any(service in item["path"] for service in ["4share.vn/f/", "fshare.vn/file"]):
-				item["path"] = "plugin://plugin.video.xshare/?mode=3&page=0&url=" + \
-					urllib.quote_plus(item["path"])
-				item["is_playable"] = True
-				item["info"] = {"type": "video"}
-				item["path"] = pluginrootpath + "/play/" + urllib.quote_plus(item["path"])
-			elif "youtube.com/channel" in item["path"]:
-				# https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ
-				yt_route = "ytcp" if "playlists" in item["path"] else "ytc"
-				yt_cid = re.compile("youtube.com/channel/(.+?)$").findall(item["path"])[0]
-				item["path"] = "plugin://plugin.video.kodi4vn.launcher/%s/%s/" % (
-					yt_route, yt_cid)
-				item["path"] = item["path"].replace("/playlists", "")
-			elif "youtube.com/playlist" in item["path"]:
-				# https://www.youtube.com/playlist?list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI
-				yt_pid = re.compile("list=(.+?)$").findall(item["path"])[0]
-				item["path"] = "plugin://plugin.video.kodi4vn.launcher/ytp/%s/" % yt_pid
-			elif any(ext in item["path"] for ext in [".png", ".jpg", ".bmp", ".jpeg"]):
-				item["path"] = "plugin://plugin.video.kodi4vn.launcher/showimage/%s/" % urllib.quote_plus(
-					item["path"])
 			elif re.search("\.ts$", item["path"]):
 				item["path"] = "plugin://plugin.video.f4mTester/?url=%s&streamtype=TSDOWNLOADER&use_proxy_for_chunks=True&name=%s" % (
 					urllib.quote(item["path"]),
@@ -302,7 +281,7 @@ def getItems(url_path="0", tq="select A,B,C,D,E"):
 						pluginrootpath,
 						section.split("] ")[-1]
 					)
-				item["thumbnail"] = "https://www.upsieutoc.com/images/2019/06/17/viuiuiuiui.png"
+				item["thumbnail"] = "https://www.nicepng.com/png/full/970-9701901_vip-member.png"
 				items.append(item)
 	return items
 
