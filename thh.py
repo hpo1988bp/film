@@ -225,7 +225,36 @@ def getItems(url_path="0", tq="select A,B,C,D,E"):
 			elif any(service in item["path"] for service in ["fshare.vn/folder"]):
 				item["path"] = pluginrootpath + "/fshare/" + \
 					urllib.quote_plus(item["path"].encode("utf8"))
-					
+				# item["path"] = "plugin://plugin.video.xshare/?mode=90&page=0&url=" + urllib.quote_plus(item["path"])
+			elif any(service in item["path"] for service in ["4share.vn/d/"]):
+				item["path"] = "plugin://plugin.video.xshare/?mode=38&page=0&url=" + \
+					urllib.quote_plus(item["path"])
+			elif any(service in item["path"] for service in ["4share.vn/f/"]):
+				# elif any(service in item["path"] for service in ["4share.vn/f/", "fshare.vn/file"]):
+				item["path"] = "plugin://plugin.video.xshare/?mode=3&page=0&url=" + \
+					urllib.quote_plus(item["path"])
+				item["is_playable"] = True
+				item["info"] = {"type": "video"}
+				item["path"] = pluginrootpath + "/play/" + urllib.quote_plus(item["path"])
+			elif "youtube.com/channel" in item["path"]:
+				# https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ
+				yt_route = "ytcp" if "playlists" in item["path"] else "ytc"
+				yt_cid = re.compile("youtube.com/channel/(.+?)$").findall(item["path"])[0]
+				item["path"] = "plugin://plugin.video.kodi4vn.launcher/%s/%s/" % (
+					yt_route, yt_cid)
+				item["path"] = item["path"].replace("/playlists", "")
+			elif "youtube.com/playlist" in item["path"]:
+				# https://www.youtube.com/playlist?list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI
+				yt_pid = re.compile("list=(.+?)$").findall(item["path"])[0]
+				item["path"] = "plugin://plugin.video.kodi4vn.launcher/ytp/%s/" % yt_pid
+			elif any(ext in item["path"] for ext in [".png", ".jpg", ".bmp", ".jpeg"]):
+				item["path"] = "plugin://plugin.video.kodi4vn.launcher/showimage/%s/" % urllib.quote_plus(
+					item["path"])
+			elif re.search("\.ts$", item["path"]):
+				item["path"] = "plugin://plugin.video.f4mTester/?url=%s&streamtype=TSDOWNLOADER&use_proxy_for_chunks=True&name=%s" % (
+					urllib.quote(item["path"]),
+					urllib.quote_plus(item["label"])
+				)
 				item["path"] = pluginrootpath + \
 					"/executebuiltin/" + urllib.quote_plus(item["path"])
 			else:
@@ -1046,6 +1075,26 @@ def get_playable_url(url):
 					xbmc.executebuiltin('Notification("%s", "%s", "%d", "%s")' % (header, message, 10000, ''))
 					return None
 				return url
+			return None
+		except:	pass
+	elif "tv24.vn" in url:
+		cid = re.compile('/(\d+)/').findall(url)[0]
+		return "plugin://plugin.video.sctv/play/" + cid
+	elif "dailymotion.com" in url:
+		did = re.compile("/(\w+)$").findall(url)[0]
+		return "plugin://plugin.video.dailymotion_com/?url=%s&mode=playVideo" % did
+	else:
+		if "://" not in url:
+			url = None
+	return url
+
+def convert_ipv4_url(url):
+	host = re.search('//(.+?)(/|\:)', url).group(1)
+	addrs = socket.getaddrinfo(host,443)
+	ipv4_addrs = [addr[4][0] for addr in addrs if addr[0] == socket.AF_INET]
+	url = url.replace(host, ipv4_addrs[0])
+	return url
+
 def LoginFShare(uname,pword):
 	login_uri = "https://api2.fshare.vn/api/user/login"
 	login_uri = convert_ipv4_url(login_uri)
